@@ -27,7 +27,7 @@ export function Header() {
     >
       <div className="mx-auto container px-4 py-3 flex items-center justify-between">
         <Link
-          href="#home"
+          href="/"
           className="flex items-center gap-2"
           aria-label="Thryve home"
         >
