@@ -123,6 +123,11 @@ export default function VideoIdeasPage() {
     false,
     false,
   ]);
+  const [planModalOpen, setPlanModalOpen] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState<any>(null);
+  const [generatingPlan, setGeneratingPlan] = useState(false);
+  const [selectedIdeaForPlan, setSelectedIdeaForPlan] =
+    useState<VideoIdea | null>(null);
 
   useEffect(() => {
     const loadMyChannels = async () => {
@@ -348,6 +353,66 @@ export default function VideoIdeasPage() {
     setEditingIdea(null);
     setFormData({ title: "", description: "", script: "", plan: "", tags: "" });
     setCreateModalOpen(true);
+  };
+
+  const handleViewPlan = (idea: VideoIdea) => {
+    if (idea.plan) {
+      try {
+        const planData = JSON.parse(idea.plan);
+        setCurrentPlan(planData);
+        setPlanModalOpen(true);
+      } catch (error) {
+        console.error("Error parsing plan data:", error);
+        toast.error("Error loading plan data");
+      }
+    }
+  };
+
+  const handleCreatePlan = async (idea: VideoIdea) => {
+    if (!idea.title || !idea.description) {
+      toast.error("Idea must have title and description to generate plan");
+      return;
+    }
+
+    try {
+      setGeneratingPlan(true);
+      setSelectedIdeaForPlan(idea);
+
+      const res = await fetch("/api/ideas/generate-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ideaId: idea.id,
+          context: `${idea.title} - ${idea.description}`,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.error || "Failed to generate plan");
+      }
+
+      // Update the idea with the new plan
+      const updatedIdeas = videoIdeas.map((i) =>
+        i.id === idea.id ? { ...i, plan: data.plan } : i
+      );
+      setVideoIdeas(updatedIdeas);
+
+      // Show the plan in modal
+      setCurrentPlan(data.planData);
+      setPlanModalOpen(true);
+
+      toast.success("Video plan generated successfully!");
+    } catch (err) {
+      console.error("Generate plan error:", err);
+      toast.error(
+        err instanceof Error ? err.message : "Failed to generate plan"
+      );
+    } finally {
+      setGeneratingPlan(false);
+      setSelectedIdeaForPlan(null);
+    }
   };
 
   const handleGenerateNextIdeas = async () => {
@@ -719,6 +784,34 @@ export default function VideoIdeasPage() {
                         </div>
 
                         <div className="flex items-center space-x-2 ml-4">
+                          {idea.plan ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleViewPlan(idea)}
+                              className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                            >
+                              <FileText className="h-4 w-4" />
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleCreatePlan(idea)}
+                              disabled={
+                                generatingPlan &&
+                                selectedIdeaForPlan?.id === idea.id
+                              }
+                              className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                            >
+                              {generatingPlan &&
+                              selectedIdeaForPlan?.id === idea.id ? (
+                                <Loader className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Plus className="h-4 w-4" />
+                              )}
+                            </Button>
+                          )}
                           <Button
                             variant="outline"
                             size="sm"
@@ -880,6 +973,108 @@ export default function VideoIdeasPage() {
                   Generate Ideas
                 </>
               )}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Plan Modal */}
+      <Dialog open={planModalOpen} onOpenChange={setPlanModalOpen}>
+        <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              <FileText className="h-5 w-5" />
+              <span>Video Production Plan</span>
+            </DialogTitle>
+            <DialogDescription>
+              Detailed production timeline for your video idea
+            </DialogDescription>
+          </DialogHeader>
+
+          {currentPlan && (
+            <div className="space-y-6">
+              {/* Plan Header */}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold mb-2">
+                  {currentPlan.video_title}
+                </h3>
+                <div className="flex items-center space-x-4 text-sm text-gray-600">
+                  <span>
+                    <strong>Type:</strong> {currentPlan.video_type}
+                  </span>
+                  <span>
+                    <strong>Duration:</strong>{" "}
+                    {currentPlan.estimated_total_days} days
+                  </span>
+                </div>
+              </div>
+
+              {/* Production Timeline */}
+              <div>
+                <h4 className="text-lg font-semibold mb-4">
+                  Production Timeline
+                </h4>
+                <div className="space-y-4">
+                  {currentPlan.production_timeline?.map(
+                    (day: any, index: number) => (
+                      <Card key={index} className="p-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <h5 className="font-semibold text-lg">
+                              {day.date_offset} - {day.phase}
+                            </h5>
+                            <p className="text-sm text-gray-600">
+                              {day.daily_goal}
+                            </p>
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            Day {day.day}
+                          </Badge>
+                        </div>
+
+                        <div className="space-y-2">
+                          {day.tasks?.map((task: any, taskIndex: number) => (
+                            <div
+                              key={taskIndex}
+                              className="border-l-2 border-blue-200 pl-3 py-2"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium">{task.task}</span>
+                                <div className="flex items-center space-x-2 text-xs text-gray-500">
+                                  <span>{task.duration}</span>
+                                  <span>•</span>
+                                  <span>{task.time_slot}</span>
+                                  <Badge
+                                    variant={
+                                      task.priority === "high"
+                                        ? "destructive"
+                                        : task.priority === "medium"
+                                        ? "default"
+                                        : "secondary"
+                                    }
+                                    className="text-xs"
+                                  >
+                                    {task.priority}
+                                  </Badge>
+                                </div>
+                              </div>
+                              <p className="text-sm text-gray-600 mt-1">
+                                <strong>Deliverable:</strong> {task.deliverable}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </Card>
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end">
+            <Button variant="outline" onClick={() => setPlanModalOpen(false)}>
+              Close
             </Button>
           </div>
         </DialogContent>
