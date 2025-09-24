@@ -38,8 +38,7 @@ model Channels {
   updatedAt       DateTime @updatedAt
   user            User     @relation(fields: [userId], references: [id])
 
-  ownerSimilarChannels SimilarChannels[] @relation("ownerChannel")
-  SimilarChannels      SimilarChannels[] @relation("similarChannel")
+  similarChannels SimilarChannels[]
   assests              Assests[]
   videoIdeas           VideoIdeas[]
   thumbnails           Thumbnails[]
@@ -51,10 +50,12 @@ model Channels {
 model SimilarChannels {
   ownerChannelId   String
   similarChannelId String
+  rank             Int      @default(0)
+  relevance_score  String
+  reasoning        String?  @db.Text
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  ownerChannel     Channels @relation("ownerChannel", fields: [ownerChannelId], references: [channelId])
-  similarChannel   Channels @relation("similarChannel", fields: [similarChannelId], references: [channelId])
+  ownerChannel     Channels @relation( fields: [ownerChannelId], references: [channelId])
 
   @@id([ownerChannelId, similarChannelId])
 }

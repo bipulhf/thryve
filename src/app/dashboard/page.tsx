@@ -436,7 +436,7 @@ export default function Dashboard() {
         {/* Channel Selection */}
         {channelsData?.channels && channelsData?.channels.length > 0 && (
           <Card>
-            <CardHeader>
+            <CardHeader className="">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center space-x-2">
@@ -610,7 +610,7 @@ export default function Dashboard() {
           <>
             {/* Channel Header */}
             <Card>
-              <CardHeader>
+              <CardHeader className="">
                 <div className="flex items-center space-x-4">
                   <Avatar className="h-16 w-16">
                     <AvatarImage
@@ -672,7 +672,7 @@ export default function Dashboard() {
                 {videosData.videos.map((video) => (
                   <Card
                     key={video.id}
-                    className="overflow-hidden hover:shadow-lg transition-shadow"
+                    className="overflow-hidden hover:shadow-lg transition-shadow p-0 pb-2"
                   >
                     <div
                       className="relative group cursor-pointer"

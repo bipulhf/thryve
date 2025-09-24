@@ -28,7 +28,7 @@ import { UploadDropzone } from "@uploadthing/react";
 import type { AppFileRouter } from "@/app/api/uploadthing/core";
 import { UploadButton } from "@/utils/uploadthing";
 import { toast } from "sonner";
-import { Loader } from "lucide-react";
+import { Loader, Download, Pencil } from "lucide-react";
 
 type Channel = {
   channelId: string;
@@ -214,36 +214,44 @@ export default function ThumbnailsPage() {
                   <Card key={t.id} className="overflow-hidden p-0">
                     <div className="relative h-72 bg-gray-100">
                       {t.url ? (
-                        <Image
-                          src={t.url}
-                          alt={t.title || "Thumbnail"}
-                          fill
-                          className="object-cover"
-                        />
+                        <>
+                          <Image
+                            src={t.url}
+                            alt={t.title || "Thumbnail"}
+                            fill
+                            className="object-cover"
+                          />
+                          <a
+                            href={t.url}
+                            download
+                            className="absolute top-2 right-2 inline-flex items-center gap-1 rounded bg-white/90 px-2 py-1 text-xs text-black shadow hover:bg-white"
+                            onClick={(e) => e.stopPropagation()}
+                            target="_blank"
+                          >
+                            <Download className="h-3 w-3" />
+                          </a>
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            className="absolute bottom-2 left-2 text-xs p-0"
+                            onClick={() => {
+                              if (t.url) {
+                                setEditorImageUrl(t.url);
+                                setEditorOpen(true);
+                              } else {
+                                toast.info("No image to edit");
+                              }
+                            }}
+                          >
+                            <Pencil className="h-2 w-2" /> Edit
+                          </Button>
+                        </>
                       ) : (
                         <div className="h-full w-full flex items-center justify-center text-black/50">
                           No image
                         </div>
                       )}
                     </div>
-                    <CardContent>
-                      <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-                        <span>{formatDate(t.createdAt)}</span>
-                        <Button
-                          variant="secondary"
-                          onClick={() => {
-                            if (t.url) {
-                              setEditorImageUrl(t.url);
-                              setEditorOpen(true);
-                            } else {
-                              toast.info("No image to edit");
-                            }
-                          }}
-                        >
-                          Edit
-                        </Button>
-                      </div>
-                    </CardContent>
                   </Card>
                 ))}
               </div>
