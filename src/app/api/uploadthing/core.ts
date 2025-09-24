@@ -17,6 +17,19 @@ export const appFileRouter = {
         fileKey: file.key,
       };
     }),
+  audioFile: f({ audio: { maxFileSize: "8MB", maxFileCount: 1 } })
+    .middleware(async () => {
+      const userId = await requireUserId();
+      return { userId };
+    })
+    .onUploadComplete(async ({ file, metadata }) => {
+      // Return info needed by client to post-process (e.g., create DB record)
+      return {
+        uploadedBy: metadata.userId,
+        fileUrl: file.ufsUrl,
+        fileKey: file.key,
+      };
+    }),
 } satisfies FileRouter;
 
 export type AppFileRouter = typeof appFileRouter;
