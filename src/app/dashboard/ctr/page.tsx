@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import {
   Card,
   CardContent,
@@ -274,14 +273,16 @@ export default function CTRPredictorPage() {
 
   if (loading || isLoadingFromStorage) {
     return (
-      <LoadingPage
-        message={
-          isLoadingFromStorage
-            ? "Loading previous analysis..."
-            : "Loading your YouTube channels..."
-        }
-        fullScreen={true}
-      />
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <LoadingPage
+          message={
+            isLoadingFromStorage
+              ? "Loading previous analysis..."
+              : "Loading your YouTube channels..."
+          }
+          fullScreen={false}
+        />
+      </div>
     );
   }
 
@@ -308,7 +309,7 @@ export default function CTRPredictorPage() {
   }
 
   return (
-    <DashboardShell>
+    <div>
       <div className="space-y-6">
         {/* Channel Selection */}
         {channelsData?.channels && channelsData?.channels.length > 0 && (
@@ -692,6 +693,6 @@ export default function CTRPredictorPage() {
           </div>
         </DialogContent>
       </Dialog>
-    </DashboardShell>
+    </div>
   );
 }

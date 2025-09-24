@@ -24,7 +24,6 @@ import {
 } from "lucide-react";
 import { LoadingPage } from "@/components/loading/LoadingPage";
 import Image from "next/image";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import {
   Dialog,
   DialogContent,
@@ -259,10 +258,12 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <LoadingPage
-        message="Loading your YouTube channels..."
-        fullScreen={true}
-      />
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <LoadingPage
+          message="Loading your YouTube channels..."
+          fullScreen={false}
+        />
+      </div>
     );
   }
 
@@ -442,7 +443,7 @@ export default function Dashboard() {
   }
 
   return (
-    <DashboardShell>
+    <div>
       <div className="space-y-6">
         {/* Channel Selection */}
         {channelsData?.channels && channelsData?.channels.length > 0 && (
@@ -756,6 +757,6 @@ export default function Dashboard() {
         onOpenChange={setCritiqueOpen}
         ytVideoId={critiqueVideoId}
       />
-    </DashboardShell>
+    </div>
   );
 }

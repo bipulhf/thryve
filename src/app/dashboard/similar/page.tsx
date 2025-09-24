@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import {
   Card,
   CardContent,
@@ -172,10 +171,12 @@ export default function SimilarChannelsPage() {
 
   if (loading) {
     return (
-      <LoadingPage
-        message="Loading your YouTube channels..."
-        fullScreen={true}
-      />
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <LoadingPage
+          message="Loading your YouTube channels..."
+          fullScreen={false}
+        />
+      </div>
     );
   }
 
@@ -202,7 +203,7 @@ export default function SimilarChannelsPage() {
   }
 
   return (
-    <DashboardShell>
+    <div>
       <div className="space-y-6">
         {/* Channel Selection */}
         {channelsData?.channels && channelsData?.channels.length > 0 && (
@@ -427,6 +428,6 @@ export default function SimilarChannelsPage() {
         onOpenChange={setGapResultsOpen}
         gaps={gapResults}
       />
-    </DashboardShell>
+    </div>
   );
 }

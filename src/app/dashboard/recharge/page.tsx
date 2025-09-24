@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import DashboardShell from "@/components/dashboard/DashboardShell";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -132,85 +131,82 @@ export default function RechargePage() {
   }, [selectedPack]);
 
   return (
-    <DashboardShell>
-      <div className="py-10">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-semibold">Recharge Credits</h1>
-          <p className="text-muted-foreground mt-2">
-            Choose a credit pack and complete a secure payment to top up.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {PACKS.map((pack) => (
-            <Card
-              key={pack.id}
-              className={pack.best ? "border-2 border-black" : ""}
-            >
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>{pack.credits} Credits</span>
-                  {pack.best ? <Badge>Best value</Badge> : null}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">${pack.priceUsd}</div>
-                <ul className="space-y-2 text-sm mb-6">
-                  <li className="flex items-center gap-2">
-                    <Check size={16} /> Instant credit top-up
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check size={16} /> Secure Stripe payment
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check size={16} /> No subscription required
-                  </li>
-                </ul>
-                <Button
-                  className="w-full"
-                  disabled={loading === pack.id}
-                  onClick={() => setSelectedPack(pack)}
-                >
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  {loading === pack.id ? "Preparing..." : "Select"}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {selectedPack && clientSecret && stripePromise ? (
-          <div className="max-w-lg mx-auto mt-10">
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  Pay ${selectedPack.priceUsd} for {selectedPack.credits}{" "}
-                  credits
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Elements options={{ clientSecret }} stripe={stripePromise}>
-                  <PaymentForm
-                    clientSecret={clientSecret}
-                    paymentIntentId={paymentIntentId!}
-                    onCredited={() => {
-                      setSelectedPack(null);
-                      setClientSecret(null);
-                      setPaymentIntentId(null);
-                    }}
-                  />
-                </Elements>
-              </CardContent>
-            </Card>
-          </div>
-        ) : null}
-
-        <Separator className="my-10" />
-        <div className="text-center text-sm text-muted-foreground">
-          Payments are processed by Stripe. Your credits will be added
-          automatically after successful payment.
-        </div>
+    <div className="py-10">
+      <div className="text-center mb-10">
+        <h1 className="text-3xl font-semibold">Recharge Credits</h1>
+        <p className="text-muted-foreground mt-2">
+          Choose a credit pack and complete a secure payment to top up.
+        </p>
       </div>
-    </DashboardShell>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {PACKS.map((pack) => (
+          <Card
+            key={pack.id}
+            className={pack.best ? "border-2 border-black" : ""}
+          >
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span>{pack.credits} Credits</span>
+                {pack.best ? <Badge>Best value</Badge> : null}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold mb-4">${pack.priceUsd}</div>
+              <ul className="space-y-2 text-sm mb-6">
+                <li className="flex items-center gap-2">
+                  <Check size={16} /> Instant credit top-up
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check size={16} /> Secure Stripe payment
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check size={16} /> No subscription required
+                </li>
+              </ul>
+              <Button
+                className="w-full"
+                disabled={loading === pack.id}
+                onClick={() => setSelectedPack(pack)}
+              >
+                <CreditCard className="mr-2 h-4 w-4" />
+                {loading === pack.id ? "Preparing..." : "Select"}
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {selectedPack && clientSecret && stripePromise ? (
+        <div className="max-w-lg mx-auto mt-10">
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                Pay ${selectedPack.priceUsd} for {selectedPack.credits} credits
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Elements options={{ clientSecret }} stripe={stripePromise}>
+                <PaymentForm
+                  clientSecret={clientSecret}
+                  paymentIntentId={paymentIntentId!}
+                  onCredited={() => {
+                    setSelectedPack(null);
+                    setClientSecret(null);
+                    setPaymentIntentId(null);
+                  }}
+                />
+              </Elements>
+            </CardContent>
+          </Card>
+        </div>
+      ) : null}
+
+      <Separator className="my-10" />
+      <div className="text-center text-sm text-muted-foreground">
+        Payments are processed by Stripe. Your credits will be added
+        automatically after successful payment.
+      </div>
+    </div>
   );
 }
