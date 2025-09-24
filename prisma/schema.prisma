@@ -64,7 +64,7 @@ model Assests {
   generatorId String   @unique
   status      Status   @default(PROCESSING)
   channelId   String   @unique
-  url         String
+  url         String?
   assetType   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -90,12 +90,12 @@ model Thumbnails {
   channelId   String
   generatorId String     @unique
   status      Status     @default(PROCESSING)
-  title       String
-  description String?    @db.Text
+  title       String?
+  url         String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  videoIdeaId String
-  videoIdea   VideoIdeas @relation(fields: [videoIdeaId], references: [id])
+  videoIdeaId String?
+  videoIdea   VideoIdeas? @relation(fields: [videoIdeaId], references: [id])
   channel     Channels   @relation(fields: [channelId], references: [channelId])
 }
 
@@ -106,6 +106,7 @@ model Reels {
   status      Status       @default(PROCESSING)
   title       String
   description String?      @db.Text
+  url         String?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   videoIdeaId String
@@ -119,7 +120,7 @@ model ReelAssets {
   reelId      String
   generatorId String   @unique
   status      Status   @default(PROCESSING)
-  url         String
+  url         String?
   assetType   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
