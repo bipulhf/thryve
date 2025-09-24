@@ -24,6 +24,7 @@ export async function POST(req: Request) {
   try {
     const body = (await req.json()) as IncomingBody;
 
+    console.log(body);
     const requestId = body?.request_id || body?.gateway_request_id;
     if (!requestId) {
       return NextResponse.json(
@@ -38,14 +39,16 @@ export async function POST(req: Request) {
 
     // Try to update in order: Thumbnails, Reels, ReelAssets, Assests
     // Each model has unique generatorId according to schema.
-    // Thumbnails/Reels do not have url fields; ReelAssets/Assests do.
     let updated = false;
 
     // Thumbnails
     try {
       const thumb = await prisma.thumbnails.update({
         where: { generatorId: requestId },
-        data: { status: newStatus as any },
+        data: {
+          status: newStatus as any,
+          ...(imageUrl ? { url: imageUrl } : {}),
+        },
         select: { id: true },
       });
       if (thumb) updated = true;
@@ -56,7 +59,10 @@ export async function POST(req: Request) {
       try {
         const reel = await prisma.reels.update({
           where: { generatorId: requestId },
-          data: { status: newStatus as any },
+          data: {
+            status: newStatus as any,
+            ...(imageUrl ? { url: imageUrl } : {}),
+          },
           select: { id: true },
         });
         if (reel) updated = true;

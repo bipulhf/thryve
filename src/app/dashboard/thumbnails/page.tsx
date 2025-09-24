@@ -22,11 +22,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
+import ImageEditor from "@/components/ui/image-editor";
 import { LoadingPage } from "@/components/loading/LoadingPage";
 import { UploadDropzone } from "@uploadthing/react";
 import type { AppFileRouter } from "@/app/api/uploadthing/core";
 import { UploadButton } from "@/utils/uploadthing";
 import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
 type Channel = {
   channelId: string;
@@ -41,8 +43,8 @@ type Channel = {
 type ThumbnailItem = {
   id: string;
   title: string;
-  description: string | null;
   channelId: string;
+  url?: string | null;
   createdAt: string;
 };
 
@@ -52,22 +54,25 @@ export default function ThumbnailsPage() {
     null
   );
   const [thumbnails, setThumbnails] = useState<ThumbnailItem[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isChannelLoading, setIsChannelLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Modal state
   const [open, setOpen] = useState(false);
   const [prompt, setPrompt] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [previews, setPreviews] = useState<
     { id: string; url?: string; status: "uploaded" | "finished" }[]
   >([]);
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [editorImageUrl, setEditorImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
+        setIsChannelLoading(true);
         const res = await fetch("/api/channels/me");
         const data = await res.json();
         if (!mounted) return;
@@ -79,6 +84,8 @@ export default function ThumbnailsPage() {
         }
       } catch (e) {
         // ignore
+      } finally {
+        setIsChannelLoading(false);
       }
     })();
     return () => {
@@ -124,7 +131,11 @@ export default function ThumbnailsPage() {
     <DashboardShell>
       <div className="space-y-6">
         {/* Channel selection header */}
-        {channels.length > 0 ? (
+        {isChannelLoading ? (
+          <div className="">
+            <Loader className="animate-spin text-primary" />
+          </div>
+        ) : channels.length > 0 ? (
           <Card>
             <CardHeader>
               <CardTitle>Thumbnails</CardTitle>
@@ -200,23 +211,37 @@ export default function ThumbnailsPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {thumbnails.map((t) => (
-                  <Card key={t.id} className="overflow-hidden">
-                    <div className="h-48 bg-gray-100 flex items-center justify-center">
-                      {/* Placeholder image area; actual image URL is not provided in API for now */}
-                      <span className="text-black/50">Thumbnail {t.title}</span>
+                  <Card key={t.id} className="overflow-hidden p-0">
+                    <div className="relative h-72 bg-gray-100">
+                      {t.url ? (
+                        <Image
+                          src={t.url}
+                          alt={t.title || "Thumbnail"}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center text-black/50">
+                          No image
+                        </div>
+                      )}
                     </div>
-                    <CardHeader>
-                      <CardTitle className="text-base line-clamp-1">
-                        {t.title}
-                      </CardTitle>
-                      <CardDescription className="line-clamp-2">
-                        {t.description}
-                      </CardDescription>
-                    </CardHeader>
                     <CardContent>
-                      <div className="flex items-center justify-between text-sm text-gray-600">
+                      <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
                         <span>{formatDate(t.createdAt)}</span>
-                        <Badge variant="secondary">Completed</Badge>
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            if (t.url) {
+                              setEditorImageUrl(t.url);
+                              setEditorOpen(true);
+                            } else {
+                              toast.info("No image to edit");
+                            }
+                          }}
+                        >
+                          Edit
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -398,6 +423,23 @@ export default function ThumbnailsPage() {
                 </Button>
               </div>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Image Editor Modal */}
+        <Dialog open={editorOpen} onOpenChange={setEditorOpen}>
+          <DialogContent className="min-w-5xl w-full">
+            <DialogHeader>
+              <DialogTitle>Edit Thumbnail</DialogTitle>
+            </DialogHeader>
+            {editorImageUrl ? (
+              <ImageEditor
+                imageUrl={editorImageUrl}
+                onClose={() => setEditorOpen(false)}
+              />
+            ) : (
+              <div className="p-6 text-black/60">No image selected</div>
+            )}
           </DialogContent>
         </Dialog>
       </div>

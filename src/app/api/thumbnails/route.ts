@@ -24,6 +24,7 @@ export async function GET(req: Request) {
       select: {
         id: true,
         title: true,
+        url: true,
         channelId: true,
         createdAt: true,
       },
@@ -120,7 +121,7 @@ export async function POST(req: Request) {
     }
 
     const systemPrompt =
-      "Create a similar styled high-impact YouTube thumbnail image using ONLY the provided images as sources. Do not include any text, or watermarks. Focus on clear subject, vibrant contrast, and platform-accurate 16:9 aspect. Enhance clarity, edge definition.";
+      "Create an ultra HD 4K YouTube thumbnail image in a high-impact cinematic style using ONLY the provided images as sources. Do not include any text, numbers, or watermarks — only visuals. Ensure the composition has a clear central subject, dramatic lighting, vibrant contrast, and sharp edge definition. Match the platform-accurate 16:9 aspect ratio and enhance clarity for maximum thumbnail appeal.";
 
     const finalPrompt = [userPrompt?.trim(), systemPrompt]
       .filter(Boolean)
