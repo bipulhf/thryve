@@ -1,4 +1,4 @@
-import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { google } from "googleapis";
 
@@ -62,6 +62,8 @@ export async function GET(
       channelTitle: video.snippet?.channelTitle,
       url: `https://www.youtube.com/watch?v=${video.id?.videoId}`,
     }));
+
+    console.log(formattedVideos[0].thumbnail);
 
     const response = {
       channel: {

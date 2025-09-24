@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { LoadingPage } from "@/components/loading/LoadingPage";
 import Image from "next/image";
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
 
 interface Video {
   id: string;
@@ -253,7 +254,7 @@ export default function Dashboard() {
 
   if (error) {
     return (
-      <div className="container mx-auto p-6">
+      <div className="container flex flex-col items-center justify-center mx-auto p-6">
         <Card className="border-red-200 bg-red-50">
           <CardHeader>
             <CardTitle className="text-red-800">
@@ -278,7 +279,7 @@ export default function Dashboard() {
   // Onboarding UI when user has no channels yet
   if (hasChannels === false) {
     return (
-      <div className="container mx-auto p-6 flex flex-col items-center justify-center min-h-[85vh]">
+      <div className="container mx-auto p-6 flex flex-col items-center justify-center min-h-[65vh]">
         <div className="absolute inset-0 -z-10 flex justify-end">
           <div className="w-[480px] h-[320px] bg-[#ec9347]/10 blur-2xl rounded-[48px]" />
         </div>
@@ -427,183 +428,195 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Channel Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Youtube className="h-6 w-6" />
-            <span>Your YouTube Channels</span>
-          </CardTitle>
-          <CardDescription>
-            Select a channel to view its videos and analytics
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {channelsData?.channels.map((channel) => (
-              <Card
-                key={channel.id}
-                className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-                  selectedChannelId === channel.id
-                    ? "ring-2 ring-blue-500 bg-blue-50"
-                    : "hover:bg-gray-50"
-                }`}
-                onClick={() => setSelectedChannelId(channel.id)}
-              >
-                <CardHeader className="pb-3">
-                  <div className="flex items-center space-x-3">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage
-                        src={channel.thumbnail}
-                        alt={channel.title}
-                      />
-                      <AvatarFallback>
-                        {channel.title?.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <CardTitle className="text-lg line-clamp-1">
-                        {channel.title}
-                      </CardTitle>
-                      <div className="flex space-x-2 mt-1">
-                        <Badge variant="secondary" className="text-xs">
-                          <Users className="h-3 w-3 mr-1" />
-                          {formatNumber(channel.subscriberCount)}
-                        </Badge>
-                        <Badge variant="secondary" className="text-xs">
-                          <Video className="h-3 w-3 mr-1" />
-                          {formatNumber(channel.videoCount)}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Selected Channel Videos */}
-      {selectedChannelId && videosData && (
-        <>
-          {/* Channel Header */}
+    <DashboardShell>
+      <div className="space-y-6">
+        {/* Channel Selection */}
+        {channelsData?.channels && channelsData?.channels.length > 1 && (
           <Card>
             <CardHeader>
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage
-                    src={videosData.channel.thumbnail}
-                    alt={videosData.channel.title}
-                  />
-                  <AvatarFallback>
-                    {videosData.channel.title?.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <CardTitle className="text-2xl">
-                    {videosData.channel.title}
-                  </CardTitle>
-                  <CardDescription className="mt-2">
-                    {videosData.channel.description}
-                  </CardDescription>
-                  <div className="flex space-x-4 mt-4">
-                    <Badge
-                      variant="secondary"
-                      className="flex items-center space-x-1"
-                    >
-                      <Users className="h-4 w-4" />
-                      <span>
-                        {formatNumber(videosData.channel.subscriberCount)}{" "}
-                        subscribers
-                      </span>
-                    </Badge>
-                    <Badge
-                      variant="secondary"
-                      className="flex items-center space-x-1"
-                    >
-                      <Video className="h-4 w-4" />
-                      <span>
-                        {formatNumber(videosData.channel.videoCount)} videos
-                      </span>
-                    </Badge>
-                    <Badge
-                      variant="secondary"
-                      className="flex items-center space-x-1"
-                    >
-                      <Eye className="h-4 w-4" />
-                      <span>
-                        {formatNumber(videosData.channel.viewCount)} views
-                      </span>
-                    </Badge>
-                  </div>
-                </div>
-              </div>
+              <CardTitle className="flex items-center space-x-2">
+                <Youtube className="h-6 w-6" />
+                <span>Your YouTube Channels</span>
+              </CardTitle>
+              <CardDescription>
+                Select a channel to view its videos and analytics
+              </CardDescription>
             </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {channelsData?.channels.map((channel) => (
+                  <Card
+                    key={channel.id}
+                    className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
+                      selectedChannelId === channel.id
+                        ? "ring-2 ring-primary bg-primary/10"
+                        : "hover:bg-gray-50"
+                    }`}
+                    onClick={() => setSelectedChannelId(channel.id)}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage
+                            src={channel.thumbnail}
+                            alt={channel.title}
+                          />
+                          <AvatarFallback>
+                            {channel.title?.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg line-clamp-1">
+                            {channel.title}
+                          </CardTitle>
+                          <div className="flex space-x-2 mt-1">
+                            <Badge variant="secondary" className="text-xs">
+                              <Users className="h-3 w-3 mr-1" />
+                              {formatNumber(channel.subscriberCount)}
+                            </Badge>
+                            <Badge variant="secondary" className="text-xs">
+                              <Video className="h-3 w-3 mr-1" />
+                              {formatNumber(channel.videoCount)}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
           </Card>
+        )}
 
-          {/* Videos Grid */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Latest Videos</h2>
-              {videosLoading && (
-                <div className="flex items-center space-x-2 text-gray-600">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                  <span className="text-sm">Loading videos...</span>
-                </div>
-              )}
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {videosData.videos.map((video) => (
-                <Card
-                  key={video.id}
-                  className="overflow-hidden hover:shadow-lg transition-shadow"
-                >
-                  <div className="relative">
-                    <img
-                      src={video.thumbnail}
-                      alt={video.title}
-                      className="w-full h-48 object-cover"
+        {videosLoading && (
+          <div className="flex flex-col items-center justify-center min-h-[70vh]">
+            <LoadingPage message="Loading videos..." fullScreen={false} />
+          </div>
+        )}
+
+        {/* Selected Channel Videos */}
+        {selectedChannelId && videosData && (
+          <>
+            {/* Channel Header */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center space-x-4">
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage
+                      src={videosData.channel.thumbnail}
+                      alt={videosData.channel.title}
                     />
-                    <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
-                      <Button
-                        size="sm"
-                        className="opacity-0 hover:opacity-100 transition-opacity duration-200"
-                        onClick={() => window.open(video.url, "_blank")}
+                    <AvatarFallback>
+                      {videosData.channel.title?.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <CardTitle className="text-2xl">
+                      {videosData.channel.title}
+                    </CardTitle>
+                    <CardDescription className="mt-2">
+                      {videosData.channel.description}
+                    </CardDescription>
+                    <div className="flex space-x-4 mt-4">
+                      <Badge
+                        variant="secondary"
+                        className="flex items-center space-x-1"
                       >
-                        <Play className="h-4 w-4 mr-2" />
-                        Watch
-                      </Button>
+                        <Users className="h-4 w-4" />
+                        <span>
+                          {formatNumber(videosData.channel.subscriberCount)}{" "}
+                          subscribers
+                        </span>
+                      </Badge>
+                      <Badge
+                        variant="secondary"
+                        className="flex items-center space-x-1"
+                      >
+                        <Video className="h-4 w-4" />
+                        <span>
+                          {formatNumber(videosData.channel.videoCount)} videos
+                        </span>
+                      </Badge>
+                      <Badge
+                        variant="secondary"
+                        className="flex items-center space-x-1"
+                      >
+                        <Eye className="h-4 w-4" />
+                        <span>
+                          {formatNumber(videosData.channel.viewCount)} views
+                        </span>
+                      </Badge>
                     </div>
                   </div>
-                  <CardHeader>
-                    <CardTitle className="text-lg line-clamp-2">
-                      {video.title}
-                    </CardTitle>
-                    <CardDescription className="line-clamp-3">
-                      {video.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>{formatDate(video.publishedAt)}</span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => window.open(video.url, "_blank")}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
+                </div>
+              </CardHeader>
+            </Card>
+
+            {/* Videos Grid */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">Latest Videos</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {videosData.videos.map((video) => (
+                  <Card
+                    key={video.id}
+                    className="overflow-hidden hover:shadow-lg transition-shadow"
+                  >
+                    <div
+                      className="relative group cursor-pointer"
+                      onClick={() => window.open(video.url, "_blank")}
+                    >
+                      <Image
+                        src={video.thumbnail}
+                        alt={video.title}
+                        width={300}
+                        height={300}
+                        className="w-full h-72 object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 flex items-center justify-center">
+                        <Button
+                          size="sm"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(video.url, "_blank");
+                          }}
+                        >
+                          <Play className="h-4 w-4 mr-2" />
+                          Watch
+                        </Button>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    <CardHeader>
+                      <CardTitle className="text-lg line-clamp-2">
+                        {video.title}
+                      </CardTitle>
+                      <CardDescription className="line-clamp-3">
+                        {video.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between text-sm text-gray-600">
+                        <span>{formatDate(video.publishedAt)}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => window.open(video.url, "_blank")}
+                          className="text-primary hover:text-primary/80"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
-          </div>
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </div>
+    </DashboardShell>
   );
 }
