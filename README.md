@@ -6,7 +6,7 @@ Thryve is an AI-powered platform designed to supercharge YouTube creators. It tr
 
 ---
 
-## ✨ Features
+# ✨ Features
 
 - **YouTube Channel Fetch + Transcription** – Connect your channel, fetch the latest 5 videos, auto-generate transcripts, and store them as vector embeddings for analysis and reuse.
 - **Next Video Idea Generator** – Analyze competitor titles, user transcripts, comments, and trending news to suggest new video ideas, complete with draft titles, descriptions, tags, and transcription outlines.
@@ -24,6 +24,8 @@ Thryve is an AI-powered platform designed to supercharge YouTube creators. It tr
 - **Three User Tiers** – Free, Pro, Pro+ subscription plans powered by Stripe.
 
 ---
+
+
 
 # 🛠 Tech Stack
 
