@@ -36,7 +36,7 @@ Thryve is an AI-powered platform designed to supercharge YouTube creators. It tr
     
 3.  **Home Page Management**
     
-4.  **Video Ideas Generator**
+4.  **Video Ideas Generator + Plan for execution based on personal calender schedule analysis**
     
 5.  **Thumbnail Generator**
     
