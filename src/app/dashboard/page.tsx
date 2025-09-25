@@ -21,6 +21,7 @@ import {
   Video,
   Youtube,
   MessageSquare,
+  ImageDownIcon,
 } from "lucide-react";
 import { LoadingPage } from "@/components/loading/LoadingPage";
 import Image from "next/image";
@@ -105,6 +106,10 @@ export default function Dashboard() {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [critiqueOpen, setCritiqueOpen] = useState(false);
   const [critiqueVideoId, setCritiqueVideoId] = useState<string | null>(null);
+  const [confirmThumbnailOpen, setConfirmThumbnailOpen] = useState(false);
+  const [selectedVideoForThumbnail, setSelectedVideoForThumbnail] =
+    useState<Video | null>(null);
+  const [generatingThumbnail, setGeneratingThumbnail] = useState(false);
   const existingChannelIds = useMemo(() => {
     return new Set((channelsData?.channels || []).map((c) => c.id));
   }, [channelsData]);
@@ -255,6 +260,32 @@ export default function Dashboard() {
       month: "long",
       day: "numeric",
     });
+  };
+
+  const handleGenerateThumbnail = async () => {
+    if (!selectedChannelId || !selectedVideoForThumbnail) return;
+    try {
+      setGeneratingThumbnail(true);
+      const res = await fetch("/api/thumbnails", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          channelId: selectedChannelId,
+          prompt: selectedVideoForThumbnail.title,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.error || "Failed to generate thumbnail");
+      }
+      // Close dialog after successful request
+      setConfirmThumbnailOpen(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setGeneratingThumbnail(false);
+      setSelectedVideoForThumbnail(null);
+    }
   };
 
   if (loading) {
@@ -736,6 +767,17 @@ export default function Dashboard() {
                             variant="ghost"
                             size="sm"
                             onClick={() => {
+                              setSelectedVideoForThumbnail(video);
+                              setConfirmThumbnailOpen(true);
+                            }}
+                            className="text-primary hover:text-primary/80"
+                          >
+                            <ImageDownIcon className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
                               setCritiqueVideoId(video.id as string);
                               setCritiqueOpen(true);
                             }}
@@ -758,6 +800,39 @@ export default function Dashboard() {
         onOpenChange={setCritiqueOpen}
         ytVideoId={critiqueVideoId}
       />
+      <Dialog
+        open={confirmThumbnailOpen}
+        onOpenChange={setConfirmThumbnailOpen}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Generate Thumbnail</DialogTitle>
+            <DialogDescription>
+              This will start generating a thumbnail for{" "}
+              <span className="font-medium">
+                {selectedVideoForThumbnail?.title || "this video"}
+              </span>
+              . You can track progress on the thumbnails page.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setConfirmThumbnailOpen(false)}
+              disabled={generatingThumbnail}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="bg-primary hover:bg-primary/90"
+              onClick={handleGenerateThumbnail}
+              disabled={generatingThumbnail}
+            >
+              {generatingThumbnail ? "Generating..." : "Generate"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

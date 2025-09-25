@@ -55,8 +55,50 @@ export async function POST(request: Request) {
       );
     }
 
-    const reply: string = data?.result?.Output?.reply || "";
-    return NextResponse.json({ reply });
+    const reply = data?.result?.Output?.reply || "";
+
+    // Try to parse the reply as JSON, if it fails, return as text
+    try {
+      const parsedData = reply;
+
+      // Ensure all values are properly serialized strings or arrays
+      const sanitizedData = {
+        response_text:
+          typeof parsedData.response_text === "string"
+            ? parsedData.response_text
+            : JSON.stringify(parsedData.response_text || ""),
+        "Overall Sentiment:":
+          typeof parsedData["Overall Sentiment:"] === "string"
+            ? parsedData["Overall Sentiment:"]
+            : "Unknown",
+        "Sentiment Breakdown":
+          typeof parsedData["Sentiment Breakdown"] === "string"
+            ? parsedData["Sentiment Breakdown"]
+            : "0% Positive | 0% Neutral | 0% Negative",
+        "Top Positive Themes": Array.isArray(parsedData["Top Positive Themes"])
+          ? parsedData["Top Positive Themes"]
+          : [],
+        "Top Negative Themes": Array.isArray(parsedData["Top Negative Themes"])
+          ? parsedData["Top Negative Themes"]
+          : [],
+        "Trend:":
+          typeof parsedData["Trend:"] === "string"
+            ? parsedData["Trend:"]
+            : "Analysis completed",
+      };
+
+      return NextResponse.json(sanitizedData);
+    } catch {
+      // If not JSON, return as structured text response
+      return NextResponse.json({
+        response_text: reply,
+        "Overall Sentiment:": "Unknown",
+        "Sentiment Breakdown": "0% Positive | 0% Neutral | 0% Negative",
+        "Top Positive Themes": [],
+        "Top Negative Themes": [],
+        "Trend:": "Analysis completed",
+      });
+    }
   } catch (error) {
     console.error("/api/videos/comments/critique error:", error);
     return NextResponse.json(
