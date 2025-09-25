@@ -1,6 +1,3 @@
-
-#
-
 # Thryve
 
 **From idea to impact, effortlessly.**
@@ -28,14 +25,42 @@ Thryve is an AI-powered platform designed to supercharge YouTube creators. It tr
 
 ---
 
-## 🛠 Tech Stack
+# 🛠 Tech Stack
 
-- **Frontend**: [Next.js 15](https://nextjs.org/) + [React 19](https://react.dev/)
-- **Backend**: [Node.js](https://nodejs.org/) + \[Fastify/Express] (optional depending on service layer)
-- **Database**: [PostgreSQL](https://www.postgresql.org/) with [Prisma ORM](https://www.prisma.io/)
-- **AI/ML**: Vector embeddings + LLMs for transcripts, summaries, and idea generation
-- **Payments**: [Stripe](https://stripe.com/) for subscriptions
-- **Storage**: [Uploadthing](https://uploadthing.com/) for storage system.
+### Frontend
+-   ![Next.js] **Next.js 15**: Framework for server-rendered React applications and full-stack features.
+-   ![React](https://img.icons8.com/color/48/000000/react-native.png) **React 19**: Core library for building dynamic and interactive user interfaces.
+### Backend
+-   ![Node.js](https://img.icons8.com/color/48/000000/nodejs.png) **Node.js**: Server-side JavaScript runtime environment.
+-   ![Express.js](https://img.icons8.com/ios/50/000000/express-js.png) **Express.js / Fastify**: Web frameworks for building APIs and managing service layers.
+### Database
+-   ![PostgreSQL](https://img.icons8.com/color/48/000000/postgreesql.png) **PostgreSQL**: Relational database for structured data management.
+-   ![Prisma](https://img.icons8.com/color/48/prisma-orm.png) **Prisma ORM**: Toolkit for modeling and querying PostgreSQL efficiently.
+### Vector Database
+-   ![Pinecone] **Pinecone**: Vector database for semantic search and embeddings.
+-   ![OpenAI](https://img.icons8.com/color/48/000000/openai.png) **OpenAI Embeddings**: Used for generating high-quality vector representations.   
+### AI & Agent Building
+
+-   ![Smythos](https://smythos.com/favicon.ico) **Smythos AI Agent Builder**: Platform for creating and deploying AI agents.
+    
+-   ![OpenAI](https://img.icons8.com/color/48/000000/openai.png) **AI/ML Models**:
+    
+    -   **ChatGPT 4o, 4.1 mini, GPT-5** – Conversational intelligence and reasoning.
+        
+    -   ![Voice AI](https://img.icons8.com/fluency/48/voice-recognition-scan.png) **Diatts Voice Cloning** – AI-powered personalized voice synthesis.
+        
+    -   ![Video AI](https://img.icons8.com/color/48/video.png) **Kling Video 2.5** – AI-based video generation for reels and short content.
+        
+    -   ![Speech to Text](https://img.icons8.com/color/48/000000/voice-presentation.png) **fal.ai Speech-to-Text** – Fast transcription service for audio inputs.
+        
+### Payments
+
+-   ![Stripe](https://img.icons8.com/color/48/000000/stripe.png) **Stripe**: Subscription management and secure payment gateway.
+    
+### Storage
+-   ![Uploadthing](https://uploadthing.com/favicon.ico) **Uploadthing**: Cloud storage and file handling system.
+    
+
 
 
 
