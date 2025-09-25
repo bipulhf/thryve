@@ -17,8 +17,8 @@ type IncomingBody = {
   payload?: {
     images?: IncomingImage[];
     seed?: number | string;
-    audio?: IncomingImage[];
-    video?: IncomingImage[];
+    audio?: IncomingImage;
+    video?: IncomingImage;
   };
 };
 
@@ -37,8 +37,8 @@ export async function POST(req: Request) {
 
     const imageUrl =
       body?.payload?.images?.[0]?.url ||
-      body?.payload?.video?.[0]?.url ||
-      body?.payload?.audio?.[0]?.url;
+      body?.payload?.video?.url ||
+      body?.payload?.audio?.url;
     const isOk = (body?.status || "").toUpperCase() === "OK";
     const newStatus = isOk ? "COMPLETED" : "FAILED";
 

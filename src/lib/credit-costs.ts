@@ -12,6 +12,9 @@ export const CREDIT_COSTS = {
   // Audio generation
   AUDIO_GENERATE: 10,
 
+  // Reel generation
+  REEL_GENERATE: 20,
+
   // Content gap analysis
   GAPS_ANALYSIS: 25,
   GAPS_OVERALL: 30,
@@ -28,6 +31,7 @@ export const CREDIT_COST_DESCRIPTIONS = {
   THUMBNAIL_GENERATE: "Generate AI-powered thumbnails for videos",
   CTR_PREDICT: "Predict click-through rates for thumbnails",
   AUDIO_GENERATE: "Generate voice-overs from text using AI",
+  REEL_GENERATE: "Generate AI-powered reels from images and prompts",
   GAPS_ANALYSIS: "Analyze content gaps compared to competitors",
   GAPS_OVERALL: "Comprehensive content gap analysis for your channel",
   IDEAS_GENERATE_NEXT: "Generate next video ideas using AI",

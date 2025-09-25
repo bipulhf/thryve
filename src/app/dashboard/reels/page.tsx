@@ -328,8 +328,9 @@ export default function ReelsPage() {
           channelId: selectedChannelId,
           title: reelTitle.trim(),
           description: reelDescription.trim() || null,
-          context: reelContext.trim() || null,
-          images: uploadedImages,
+          videoIdeaId: null, // Can be added later if needed
+          prompt: reelContext.trim() || null,
+          imageUrls: uploadedImages,
         }),
       });
 
@@ -339,9 +340,14 @@ export default function ReelsPage() {
         throw new Error(data?.error || "Failed to create reel");
       }
 
-      toast.success(
-        "Reel created successfully! It will appear in your reels when ready."
-      );
+      if (data.success) {
+        toast.success(
+          "Reel created successfully! It will appear in your reels when ready."
+        );
+      } else {
+        toast.error("Failed to create reel");
+      }
+
       setCreateModalOpen(false);
       setReelTitle("");
       setReelDescription("");
