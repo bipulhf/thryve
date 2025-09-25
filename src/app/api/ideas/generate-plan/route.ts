@@ -72,6 +72,7 @@ export async function POST(req: Request) {
     }
 
     const planData = data?.result?.Reply;
+    console.dir(planData, { depth: null });
     if (!planData) {
       return NextResponse.json(
         { error: "Missing plan data in external response" },

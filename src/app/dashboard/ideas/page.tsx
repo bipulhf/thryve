@@ -1159,19 +1159,47 @@ export default function VideoIdeasPage() {
               {/* Plan Header */}
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="text-lg font-semibold mb-2">
-                  {currentPlan.video_title}
+                  {currentPlan.summary || "Video Production Plan"}
                 </h3>
                 <div className="flex items-center space-x-4 text-sm text-gray-600">
                   <span>
-                    <strong>Type:</strong>{" "}
-                    {currentPlan.video_type.toUpperCase()}
+                    <strong>Total Tasks:</strong>{" "}
+                    {currentPlan.timeline?.length || 0}
                   </span>
                   <span>
-                    <strong>Duration:</strong>{" "}
-                    {currentPlan.estimated_total_days} days
+                    <strong>Total Duration:</strong>{" "}
+                    {currentPlan.timeline?.reduce(
+                      (total: number, task: any) =>
+                        total + task.estimate_minutes,
+                      0
+                    ) || 0}{" "}
+                    minutes
                   </span>
                 </div>
               </div>
+
+              {/* Assumptions */}
+              {currentPlan.assumptions &&
+                currentPlan.assumptions.length > 0 && (
+                  <div>
+                    <h4 className="text-lg font-semibold mb-3">Assumptions</h4>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <ul className="space-y-1">
+                        {currentPlan.assumptions.map(
+                          (assumption: string, index: number) => (
+                            <li
+                              key={index}
+                              className="text-sm text-gray-700 flex items-start"
+                            >
+                              <span className="text-blue-500 mr-2">•</span>
+                              {assumption}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                )}
 
               {/* Production Timeline */}
               <div>
@@ -1179,58 +1207,96 @@ export default function VideoIdeasPage() {
                   Production Timeline
                 </h4>
                 <div className="space-y-4">
-                  {currentPlan.production_timeline?.map(
-                    (day: any, index: number) => (
-                      <Card key={index} className="p-4">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <h5 className="font-semibold text-lg">
-                              {day.date_offset} - {day.phase}
-                            </h5>
-                            <p className="text-sm text-gray-600">
-                              {day.daily_goal}
-                            </p>
+                  {currentPlan.timeline?.map((task: any, index: number) => (
+                    <Card key={task.task_id || index} className="p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h5 className="font-semibold text-lg mb-1">
+                            {task.name}
+                          </h5>
+                          <p className="text-sm text-gray-600 mb-2">
+                            {task.deliverable}
+                          </p>
+                          <div className="flex items-center space-x-4 text-xs text-gray-500">
+                            <span>
+                              <strong>Duration:</strong> {task.estimate_minutes}{" "}
+                              minutes
+                            </span>
+                            <span>
+                              <strong>Buffer:</strong> {task.buffer_minutes}{" "}
+                              minutes
+                            </span>
+                            {task.dependencies &&
+                              task.dependencies.length > 0 && (
+                                <span>
+                                  <strong>Dependencies:</strong>{" "}
+                                  {task.dependencies.join(", ")}
+                                </span>
+                              )}
                           </div>
-                          <Badge variant="outline" className="text-xs">
-                            Day {day.day}
-                          </Badge>
                         </div>
+                        <Badge variant="outline" className="text-xs ml-4">
+                          Task {index + 1}
+                        </Badge>
+                      </div>
 
-                        <div className="space-y-2">
-                          {day.tasks?.map((task: any, taskIndex: number) => (
-                            <div
-                              key={taskIndex}
-                              className="border-l-2 border-blue-200 pl-3 py-2"
-                            >
-                              <div className="flex items-center justify-between">
-                                <span className="font-medium">{task.task}</span>
-                                <div className="flex items-center space-x-2 text-xs text-gray-500">
-                                  <span>{task.duration}</span>
-                                  <span>•</span>
-                                  <span>{task.time_slot}</span>
-                                  <Badge
-                                    variant={
-                                      task.priority === "high"
-                                        ? "destructive"
-                                        : task.priority === "medium"
-                                        ? "default"
-                                        : "secondary"
-                                    }
-                                    className="text-xs"
+                      {/* Scheduled Blocks */}
+                      {task.scheduled_blocks &&
+                        task.scheduled_blocks.length > 0 && (
+                          <div className="mb-3">
+                            <h6 className="text-sm font-medium text-gray-700 mb-2">
+                              Scheduled Time Blocks:
+                            </h6>
+                            <div className="space-y-2">
+                              {task.scheduled_blocks.map(
+                                (block: any, blockIndex: number) => (
+                                  <div
+                                    key={blockIndex}
+                                    className="bg-green-50 p-3 rounded border-l-4 border-green-400"
                                   >
-                                    {task.priority}
-                                  </Badge>
-                                </div>
-                              </div>
-                              <p className="text-sm text-gray-600 mt-1">
-                                <strong>Deliverable:</strong> {task.deliverable}
-                              </p>
+                                    <div className="flex items-center justify-between text-sm">
+                                      <span>
+                                        <strong>Start:</strong>{" "}
+                                        {new Date(block.start).toLocaleString()}
+                                      </span>
+                                      <span>
+                                        <strong>End:</strong>{" "}
+                                        {new Date(block.end).toLocaleString()}
+                                      </span>
+                                      <span className="text-green-600 font-medium">
+                                        {block.minutes} minutes
+                                      </span>
+                                    </div>
+                                  </div>
+                                )
+                              )}
                             </div>
-                          ))}
+                          </div>
+                        )}
+
+                      {/* Risks */}
+                      {task.risks && task.risks.length > 0 && (
+                        <div className="mt-3">
+                          <h6 className="text-sm font-medium text-gray-700 mb-2">
+                            Risks:
+                          </h6>
+                          <div className="flex flex-wrap gap-2">
+                            {task.risks.map(
+                              (risk: string, riskIndex: number) => (
+                                <Badge
+                                  key={riskIndex}
+                                  variant="destructive"
+                                  className="text-xs"
+                                >
+                                  {risk}
+                                </Badge>
+                              )
+                            )}
+                          </div>
                         </div>
-                      </Card>
-                    )
-                  )}
+                      )}
+                    </Card>
+                  ))}
                 </div>
               </div>
             </div>
