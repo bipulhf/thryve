@@ -26,6 +26,149 @@ Thryve is an AI-powered platform designed to supercharge YouTube creators. It tr
 ---
 
 
+# Feature category:
+
+##  Big Features (Main Modules)
+
+1.  **User Authentication & Onboarding**
+    
+2.  **Dashboard (Main Hub)**
+    
+3.  **Home Page Management**
+    
+4.  **Video Ideas Generator**
+    
+5.  **Thumbnail Generator**
+    
+6.  **Reels Maker**
+    
+7.  **Similar Channel Analyzer**
+    
+8.  **Audio Generator**
+    
+9.  **CTR Predictor**
+    
+10.  **Recharge & Payments**
+
+    
+
+
+
+## 🔎 Small Features (Sub-Functionalities)
+
+### 1. **User Authentication & Onboarding**
+
+-   Account creation
+    
+-   Sign in (existing user)
+    
+-   Onboarding process (new user)
+    
+    -   Fetch YouTube channels via Google ID
+        
+    -   Add channels manually
+        
+
+
+### 2. **Dashboard (Main Hub)**
+
+-   Navigation menu to all tools:
+    
+    -   Home, Video Ideas, Thumbnail Generator, Reels Maker, Similar Channel, Audio Generator, CTR Predictor, Recharge
+        
+
+
+### 3. **Home Page Management**
+
+-   View included channels
+    
+-   Add new channel
+    
+-   View uploaded videos
+    
+-   Single video comment analysis (via SmythOS agent)
+    
+
+
+### 4. **Video Ideas Generator**
+
+-   Generate new ideas using intelligent agent (SmythOS)
+    
+-   Add custom video ideas manually
+    
+-   **Idea workflow**:
+    
+    -   Planning
+        
+    -   Editing
+        
+    -   SEO tag generation (via SmythOS)
+        
+    -   Thumbnail generation based on idea (via SmythOS)
+        
+
+
+### 5. **Thumbnail Generator**
+
+-   Generate thumbnail from **Images + Context** (via SmythOS)
+    
+-   Generate thumbnail from **Only Context** (via SmythOS)
+    
+-   **Thumbnail editing tools**:
+    
+    -   Editing (basic image adjustments)
+        
+    -   Format options (sizes, styles, export types)
+        
+
+
+### 6. **Reels Maker**
+
+-   Create reels from images + context (via SmythOS)
+    
+-   Add audio to reels
+    
+-   Download final reels
+    
+
+
+### 7. **Similar Channel Analyzer**
+
+-   Discover similar YouTube channels (via SmythOS)
+    
+-   Find video concept gaps using:
+    
+    -   Own channel + chosen similar channel
+        
+    -   Overall concept gap analysis (via SmythOS)
+        
+
+
+### 8. **Audio Generator**
+
+-   Generate audio based on:
+    
+    -   Reference audio
+        
+    -   Speech-to-text / text-to-speech (via SmythOS)
+        
+
+
+### 9. **CTR Predictor**
+
+-   Predict Click-Through-Rate based on Thumbnail + Title (via SmythOS)
+    
+
+### 10. **Recharge & Payments**
+
+-   Stripe integration for payments & subscription recharges
+    
+  
+
+
+
+<br>
+<br>
 
 # 🛠 Tech Stack
 
